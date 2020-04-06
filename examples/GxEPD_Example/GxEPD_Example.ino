@@ -76,6 +76,9 @@
 //#include <GxGDEW075Z09/GxGDEW075Z09.h>    // 7.5" b/w/r
 //#include <GxGDEW075Z08/GxGDEW075Z08.h>    // 7.5" b/w/r 800x480
 
+// HINK displays
+#include <HINKE029A10/HINKE029A10.h> // 2.9" b/w/r HINK-E029A10
+
 #include GxEPD_BitmapExamples
 
 // FreeFonts from Adafruit_GFX
@@ -83,7 +86,6 @@
 #include <Fonts/FreeMonoBold12pt7b.h>
 #include <Fonts/FreeMonoBold18pt7b.h>
 #include <Fonts/FreeMonoBold24pt7b.h>
-
 
 #include <GxIO/GxIO_SPI/GxIO_SPI.h>
 #include <GxIO/GxIO.h>
@@ -94,23 +96,23 @@
 // C:\Users\xxx\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\2.4.2\variants\generic\common.h
 
 GxIO_Class io(SPI, /*CS=D8*/ SS, /*DC=D3*/ 0, /*RST=D4*/ 2); // arbitrary selection of D3(=0), D4(=2), selected for default of GxEPD_Class
-GxEPD_Class display(io, /*RST=D4*/ 2, /*BUSY=D2*/ 4); // default selection of D4(=2), D2(=4)
+GxEPD_Class display(io, /*RST=D4*/ 2, /*BUSY=D2*/ 4);        // default selection of D4(=2), D2(=4)
 // Heltec E-Paper 1.54" b/w without RST, BUSY
-//GxEPD_Class display(io, /*RST=D4*/ -1, /*BUSY=D2*/ -1); // no RST, no BUSY
+// GxEPD_Class display(io, /*RST=D4*/ -1, /*BUSY=D2*/ -1); // no RST, no BUSY
 // Waveshare e-Paper ESP8266 Driver Board
-//GxIO_Class io(SPI, 15, 4, 5);
-//GxEPD_Class display(io, 5, 16);
+// GxIO_Class io(SPI, 15, 4, 5);
+// GxEPD_Class display(io, 5, 16);
 
 #elif defined(ESP32)
 
 // for SPI pin definitions see e.g.:
 // C:\Users\xxx\Documents\Arduino\hardware\espressif\esp32\variants\lolin32\pins_arduino.h
 
-GxIO_Class io(SPI, /*CS=5*/ SS, /*DC=*/ 17, /*RST=*/ 16); // arbitrary selection of 17, 16
-GxEPD_Class display(io, /*RST=*/ 16, /*BUSY=*/ 4); // arbitrary selection of (16), 4
-// for LILYGO® TTGO T5 2.66 board uncomment next two lines instead of previous two lines
-//GxIO_Class io(SPI, /*CS=5*/ SS, /*DC=*/ 19, /*RST=*/ 4); // LILYGO® TTGO T5 2.66
-//GxEPD_Class display(io, /*RST=*/ 4, /*BUSY=*/ 34); // LILYGO® TTGO T5 2.66
+GxIO_Class io(SPI, /*CS=5*/ SS, /*DC=*/17, /*RST=*/16); // arbitrary selection of 17, 16
+GxEPD_Class display(io, /*RST=*/16, /*BUSY=*/4);        // arbitrary selection of (16), 4
+                                                        // for LILYGO® TTGO T5 2.66 board uncomment next two lines instead of previous two lines
+                                                        // GxIO_Class io(SPI, /*CS=5*/ SS, /*DC=*/ 19, /*RST=*/ 4); // LILYGO® TTGO T5 2.66
+// GxEPD_Class display(io, /*RST=*/ 4, /*BUSY=*/ 34); // LILYGO® TTGO T5 2.66
 
 #elif defined(ARDUINO_ARCH_SAMD)
 
@@ -118,8 +120,8 @@ GxEPD_Class display(io, /*RST=*/ 16, /*BUSY=*/ 4); // arbitrary selection of (16
 // C:\Users\xxx\AppData\Local\Arduino15\packages\arduino\hardware\samd\1.6.19\variants\mkr1000\variant.h
 // C:\Users\xxx\AppData\Local\Arduino15\packages\arduino\hardware\samd\1.6.19\variants\mkrzero\variant.h
 
-GxIO_Class io(SPI, /*CS=*/ 4, /*DC=*/ 7, /*RST=*/ 6);
-GxEPD_Class display(io, /*RST=*/ 6, /*BUSY=*/ 5);
+GxIO_Class io(SPI, /*CS=*/4, /*DC=*/7, /*RST=*/6);
+GxEPD_Class display(io, /*RST=*/6, /*BUSY=*/5);
 
 #elif defined(ARDUINO_GENERIC_STM32F103C) && defined(MCU_STM32F103C8)
 
@@ -131,8 +133,8 @@ GxEPD_Class display(io, /*RST=*/ 6, /*BUSY=*/ 5);
 // new mapping suggestion for STM32F1, e.g. STM32F103C8T6 "BluePill"
 // BUSY -> A1, RST -> A2, DC -> A3, CS-> A4, CLK -> A5, DIN -> A7
 
-GxIO_Class io(SPI, /*CS=*/ SS, /*DC=*/ 3, /*RST=*/ 2);
-GxEPD_Class display(io, /*RST=*/ 2, /*BUSY=*/ 1);
+GxIO_Class io(SPI, /*CS=*/SS, /*DC=*/3, /*RST=*/2);
+GxEPD_Class display(io, /*RST=*/2, /*BUSY=*/1);
 
 #elif defined(ARDUINO_GENERIC_STM32F103V) && defined(MCU_STM32F103VB)
 
@@ -144,8 +146,8 @@ GxEPD_Class display(io, /*RST=*/ 2, /*BUSY=*/ 1);
 // Good Display DESPI-M01
 // note: needs jumper wires from SS=PA4->CS, SCK=PA5->SCK, MOSI=PA7->SDI
 
-GxIO_Class io(SPI, /*CS=*/ SS, /*DC=*/ PE15, /*RST=*/ PE14); // DC, RST as wired by DESPI-M01
-GxEPD_Class display(io, /*RST=*/ PE14, /*BUSY=*/ PE13); // RST, BUSY as wired by DESPI-M01
+GxIO_Class io(SPI, /*CS=*/SS, /*DC=*/PE15, /*RST=*/PE14); // DC, RST as wired by DESPI-M01
+GxEPD_Class display(io, /*RST=*/PE14, /*BUSY=*/PE13);     // RST, BUSY as wired by DESPI-M01
 
 #elif defined(ARDUINO_AVR_MEGA2560)
 
@@ -153,21 +155,20 @@ GxEPD_Class display(io, /*RST=*/ PE14, /*BUSY=*/ PE13); // RST, BUSY as wired by
 // C:\Users\xxx\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.6.21\variants\mega\pins_arduino.h
 
 // select one, depending on your CS connection
-GxIO_Class io(SPI, /*CS=*/ SS, /*DC=*/ 8, /*RST=*/ 9); // arbitrary selection of 8, 9 selected for default of GxEPD_Class
-//GxIO_Class io(SPI, /*CS=*/ 10, /*DC=*/ 8, /*RST=*/ 9); // arbitrary selection of 8, 9, CS on 10 (for CS same as on UNO, for SPI on ICSP use)
+GxIO_Class io(SPI, /*CS=*/SS, /*DC=*/8, /*RST=*/9); // arbitrary selection of 8, 9 selected for default of GxEPD_Class
+// GxIO_Class io(SPI, /*CS=*/ 10, /*DC=*/ 8, /*RST=*/ 9); // arbitrary selection of 8, 9, CS on 10 (for CS same as on UNO, for SPI on ICSP use)
 
-GxEPD_Class display(io, /*RST=*/ 9, /*BUSY=*/ 7); // default selection of (9), 7
+GxEPD_Class display(io, /*RST=*/9, /*BUSY=*/7); // default selection of (9), 7
 
 #else
 
 // for SPI pin definitions see e.g.:
 // C:\Users\xxx\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.6.21\variants\standard\pins_arduino.h
 
-GxIO_Class io(SPI, /*CS=*/ SS, /*DC=*/ 8, /*RST=*/ 9); // arbitrary selection of 8, 9 selected for default of GxEPD_Class
-GxEPD_Class display(io, /*RST=*/ 9, /*BUSY=*/ 7); // default selection of (9), 7
+GxIO_Class io(SPI, /*CS=*/SS, /*DC=*/8, /*RST=*/9); // arbitrary selection of 8, 9 selected for default of GxEPD_Class
+GxEPD_Class display(io, /*RST=*/9, /*BUSY=*/7);     // default selection of (9), 7
 
 #endif
-
 
 void setup()
 {
@@ -185,11 +186,11 @@ void loop()
   showBitmapExample();
   delay(2000);
 #if !defined(__AVR)
-  //drawCornerTest();
+  // drawCornerTest();
   showFont("FreeMonoBold9pt7b", &FreeMonoBold9pt7b);
   showFont("FreeMonoBold12pt7b", &FreeMonoBold12pt7b);
-  //showFont("FreeMonoBold18pt7b", &FreeMonoBold18pt7b);
-  //showFont("FreeMonoBold24pt7b", &FreeMonoBold24pt7b);
+  // showFont("FreeMonoBold18pt7b", &FreeMonoBold18pt7b);
+  // showFont("FreeMonoBold24pt7b", &FreeMonoBold24pt7b);
 #else
   display.drawCornerTest();
   delay(2000);
@@ -250,7 +251,7 @@ void showBitmapExample()
   delay(5000);
   display.drawExamplePicture(BitmapExample3, BitmapExample4, sizeof(BitmapExample1), sizeof(BitmapExample2));
   delay(5000);
-  //display.drawBitmap(BitmapExample2, sizeof(BitmapExample2));
+  // display.drawBitmap(BitmapExample2, sizeof(BitmapExample2));
 }
 #endif
 
@@ -448,7 +449,7 @@ void showBitmapExample()
 }
 #endif
 
-#if defined(_GxGDEW026T0_H_) || defined(_GxDEPG0266BN_H_)
+#if defined(_GxGDEW026T0_H_)
 void showBitmapExample()
 {
   display.drawExampleBitmap(BitmapExample1, sizeof(BitmapExample1));
@@ -564,7 +565,7 @@ void showBitmapExample()
 void showBitmapExample()
 {
 #if defined(__AVR)
-  //display.drawBitmap(BitmapExample1, sizeof(BitmapExample1));
+  // display.drawBitmap(BitmapExample1, sizeof(BitmapExample1));
 #else
   display.drawExampleBitmap(BitmapExample1, sizeof(BitmapExample1));
   delay(2000);
@@ -645,29 +646,29 @@ void showBitmapExample()
 #else
   // draw black and red bitmap
   display.drawExamplePicture(BitmapExample1, BitmapExample2, sizeof(BitmapExample1), sizeof(BitmapExample2));
-  //delay(5000);
-  //display.drawPicture(BitmapExample1, 0, sizeof(BitmapExample1), 0);
-  //delay(5000);
-  //display.drawPicture(0, BitmapExample2, 0, sizeof(BitmapExample2));
-  //delay(5000);
-  //display.drawExamplePicture(BitmapExample1, 0, sizeof(BitmapExample1), 0);
-  //delay(5000);
-  //display.drawExamplePicture(0, BitmapExample2, 0, sizeof(BitmapExample2));
-  //delay(5000);
-  //display.fillScreen(GxEPD_WHITE);
-  //display.drawBitmap(0, 0, BitmapExample1, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK);
-  //display.update();
-  //delay(5000);
-  //display.fillScreen(GxEPD_WHITE);
-  //display.drawBitmap(0, 0, BitmapExample2, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK);
-  //display.update();
-  //display.drawExampleBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK);
-  //display.updateWindow(0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, false);
+  // delay(5000);
+  // display.drawPicture(BitmapExample1, 0, sizeof(BitmapExample1), 0);
+  // delay(5000);
+  // display.drawPicture(0, BitmapExample2, 0, sizeof(BitmapExample2));
+  // delay(5000);
+  // display.drawExamplePicture(BitmapExample1, 0, sizeof(BitmapExample1), 0);
+  // delay(5000);
+  // display.drawExamplePicture(0, BitmapExample2, 0, sizeof(BitmapExample2));
+  // delay(5000);
+  // display.fillScreen(GxEPD_WHITE);
+  // display.drawBitmap(0, 0, BitmapExample1, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK);
+  // display.update();
+  // delay(5000);
+  // display.fillScreen(GxEPD_WHITE);
+  // display.drawBitmap(0, 0, BitmapExample2, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK);
+  // display.update();
+  // display.drawExampleBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK);
+  // display.updateWindow(0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, false);
 #endif
 }
 #endif
 
-void showFont(const char name[], const GFXfont* f)
+void showFont(const char name[], const GFXfont *f)
 {
   display.fillScreen(GxEPD_WHITE);
   display.setTextColor(GxEPD_BLACK);
@@ -690,8 +691,8 @@ void showFont(const char name[], const GFXfont* f)
 
 void showFontCallback()
 {
-  const char* name = "FreeMonoBold9pt7b";
-  const GFXfont* f = &FreeMonoBold9pt7b;
+  const char *name = "FreeMonoBold9pt7b";
+  const GFXfont *f = &FreeMonoBold9pt7b;
   display.fillScreen(GxEPD_WHITE);
   display.setTextColor(GxEPD_BLACK);
   display.setFont(f);
@@ -728,8 +729,7 @@ void drawCornerTest()
   display.setRotation(rotation); // restore
 }
 
-#if defined(_GxGDEP015OC1_H_) || defined(_GxGDEH0154D67_H_) || defined(_GxGDE0213B1_H_) || defined(_GxGDEH0213B72_H_) || defined(_GxGDEH0213B73_H_)|| defined(_GxGDEH029A1_H_) \
-|| defined(_GxDEPG0150BN_H_) || defined(_GxDEPG0213BN_H_)
+#if defined(_GxGDEP015OC1_H_) || defined(_GxGDEH0154D67_H_) || defined(_GxGDE0213B1_H_) || defined(_GxGDEH0213B72_H_) || defined(_GxGDEH0213B73_H_) || defined(_GxGDEH029A1_H_) || defined(_GxDEPG0150BN_H_) || defined(_GxDEPG0213BN_H_)
 #include "IMG_0001.h"
 void showBoat()
 {
