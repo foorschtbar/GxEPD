@@ -112,7 +112,7 @@ GxIO_Class io(SPI, /*CS=5*/ SS, /*DC=*/17, /*RST=*/16); // arbitrary selection o
 GxEPD_Class display(io, /*RST=*/16, /*BUSY=*/4);        // arbitrary selection of (16), 4
                                                         // for LILYGO® TTGO T5 2.66 board uncomment next two lines instead of previous two lines
                                                         // GxIO_Class io(SPI, /*CS=5*/ SS, /*DC=*/ 19, /*RST=*/ 4); // LILYGO® TTGO T5 2.66
-// GxEPD_Class display(io, /*RST=*/ 4, /*BUSY=*/ 34); // LILYGO® TTGO T5 2.66
+                                                        // GxEPD_Class display(io, /*RST=*/ 4, /*BUSY=*/ 34); // LILYGO® TTGO T5 2.66
 
 #elif defined(ARDUINO_ARCH_SAMD)
 
@@ -408,21 +408,7 @@ void showBitmapExample()
 }
 #endif
 
-#if defined(_GxGDEM029T94_H_) || defined(_GxDEPG0290BS_H_)
-void showBitmapExample()
-{
-  display.drawExampleBitmap(BitmapExample1, sizeof(BitmapExample1));
-  delay(2000);
-  display.drawExampleBitmap(BitmapExample2, sizeof(BitmapExample2));
-  delay(5000);
-  display.fillScreen(GxEPD_WHITE);
-  display.drawExampleBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK);
-  display.update();
-  delay(5000);
-}
-#endif
-
-#if defined(_GxGDEW029Z10_H_) || defined(_GxGDEH029Z13_H_)
+#if defined(_GxGDEW029Z10_H_)
 #define HAS_RED_COLOR
 void showBitmapExample()
 {
@@ -449,8 +435,42 @@ void showBitmapExample()
 }
 #endif
 
-#if defined(_GxGDEW026T0_H_)
+#if defined(_HINKE029A10_H_)
+#define HAS_RED_COLOR
 void showBitmapExample()
+{
+#if defined(__AVR)
+  // display.drawExamplePicture(BitmapExample1, BitmapExample2, sizeof(BitmapExample1), sizeof(BitmapExample2));
+  // delay(5000);
+#else
+  display.fillScreen(GxEPD_WHITE);
+  display.drawPicture(BitmapWaveshare_black, BitmapWaveshare_red, sizeof(BitmapWaveshare_black), sizeof(BitmapWaveshare_red), GxEPD::bm_invert | GxEPD::bm_transparent);
+  // display.drawBitmap(BitmapWaveshare_black, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK, GxEPD::bm_invert | GxEPD::bm_transparent);
+  // display.drawBitmap(BitmapWaveshare_red, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_RED, GxEPD::bm_invert | GxEPD::bm_transparent);
+  display.update();
+  delay(3000);
+  display.fillScreen(GxEPD_WHITE);
+  display.drawBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK, GxEPD::bm_invert | GxEPD::bm_transparent);
+  display.drawBitmap(BitmapExample2, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_RED, GxEPD::bm_transparent);
+  display.update();
+  delay(3000);
+  display.fillScreen(GxEPD_WHITE);
+  display.drawPicture(BitmapExample3, BitmapExample4, sizeof(BitmapExample3), sizeof(BitmapExample4), GxEPD::bm_transparent);
+  display.update();
+  delay(3000);
+  display.drawBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK);
+  display.drawBitmap(BitmapExample2, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_RED, GxEPD::bm_transparent);
+  display.update();
+  delay(3000);
+  display.fillScreen(GxEPD_WHITE);
+#endif
+}
+#endif
+
+>>>>>>> ead2cb7 (fixed bitmaps + two-color picture, updated example)
+#if defined(_GxGDEW026T0_H_)
+    void
+    showBitmapExample()
 {
   display.drawExampleBitmap(BitmapExample1, sizeof(BitmapExample1));
   delay(2000);

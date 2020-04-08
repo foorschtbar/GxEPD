@@ -1,4 +1,4 @@
-// class HINKE029A10 : Display class for HINKE029A10 
+// class HINKE029A10 : Display class for HINKE029A10
 // Author : J-M Zingg
 // Edited : ATCnetz.de
 //
@@ -21,6 +21,15 @@
 // Partial Update Delay, may have an influence on degradation
 #define HINKE029A10_PU_DELAY 500
 
+const uint8_t HINKE029A10::LUTDefault_full[] =
+{
+  0x22,  0x11, 0x10, 0x00, 0x10, 0x00, 0x00, 0x11, 0x88, 0x80, 0x80, 0x80, 0x00, 0x00, 0x6A, 0x9B,
+  0x9B, 0x9B, 0x9B, 0x00, 0x00, 0x6A, 0x9B, 0x9B, 0x9B, 0x9B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x04, 0x18, 0x04, 0x16, 0x01, 0x0A, 0x0A, 0x0A, 0x0A, 0x02, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x04, 0x08, 0x3C, 0x07, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+
 HINKE029A10::HINKE029A10(GxIO& io, int8_t rst, int8_t busy)
   : GxEPD(HINKE029A10_WIDTH, HINKE029A10_HEIGHT), IO(io),
     _current_page(-1), _using_partial_mode(false), _diag_enabled(false),
@@ -34,7 +43,7 @@ void HINKE029A10::drawPixel(int16_t x, int16_t y, uint16_t color)
 
   if ((x < 0) || (x >= width()) || (y < 0) || (y >= height())) return;
 
-  x = HINKE029A10_WIDTH - x - 1;
+  //x = HINKE029A10_WIDTH - x - 1;
 
   // check rotation, move pixel around if necessary
   switch (getRotation())
@@ -97,7 +106,65 @@ void HINKE029A10::init(uint32_t serial_diag_bitrate)
     pinMode(_rst, OUTPUT);
   }
   pinMode(_busy, INPUT);
-  fillScreen(GxEPD_WHITE);
+
+    _writeCommand(0x74);
+    _writeData(0x54);
+    _writeCommand(0x75);
+    _writeData(0x3b);
+    _writeCommand(0x01);   // Set MUX as 296
+    _writeData(0x27);
+    _writeData(0x01);
+    _writeData(0x00);
+    _writeCommand(0x3A);   // Set 100Hz
+    //_writeData(0x25);         // Set 100Hz
+    _writeData(0x35);         // Set 130Hz
+    //_writeData(0x07);         // Set 150Hz
+    _writeCommand(0x3B);   // Set 100Hz
+    //_writeData(0x06);         // Set 100Hz
+    _writeData(0x04);         // Set 130Hz
+    _writeCommand(0x11);   // data enter mode
+    _writeData(0x03);
+    _writeCommand(0x44);   // set RAM x address start/end, in page 36
+    _writeData(0x00);    // RAM x address start at 00h;
+    _writeData(0x0f);    // RAM x address end at 0fh(15+1)*8->128
+    _writeCommand(0x45);   // set RAM y address start/end, in page 37
+
+    _writeData(0x00);    // RAM y address start at 127h;
+    _writeData(0x00);
+    _writeData(0x27);    // RAM y address end at 00h;
+    _writeData(0x01);
+    _writeCommand(0x04);   // set VSH,VSL value
+    _writeData(0x41);    //      2D9  15v
+    // _writeData(0xc6);   //      2D13   7.8v
+    //_writeData(0xc1);    //      2D13   7.5v
+    //  _writeData(0x96);    //      2D9   3.8v
+    //  _writeData(0xbf);   //      2D13   7.3v
+    //  _writeData(0xb8);    //      2D13   6.6v
+    //_writeData(0xb4);    //      2D13   6.2v
+    //_writeData(0xb2);    //      2D13   6v
+    // _writeData(0xad);    //      2D9   5v
+    _writeData(0xa8);   //      2D9   5v
+    // _writeData(0xA4);    //      2D9   4.6v
+    // _writeData(0xA2);    //      2D9   4.4v
+    // _writeData(0xa0);    //      2D9   4.2v
+    // _writeData(0x9C);    //      2D9   3.8v
+    //  _writeData(0x96);    //      2D9   3.8v
+    _writeData(0x32);    //      2D9  -15v
+    _writeCommand(0x2C);           // vcom
+    // _writeData(0x78);           //-3V
+    // _writeData(0x6f);           //-2.6V
+    //  _writeData(0x6c);           //-2.6V
+    _writeData(0x68);           //-2.6V
+    // _writeData(0x5F);           //-2.4V
+    // _writeData(0x58);           //-2.4V
+    _writeCommand(0x3C);   // board
+    _writeData(0x33);    //GS1-->GS1
+
+  _writeCommand(0x32);
+  for (uint8_t i = 0; i < 70; i++) { // write LUT register with 29bytes instead of 30bytes 2D13
+    _writeData(LUTDefault_full[i]);
+  }
+
 }
 
 void HINKE029A10::fillScreen(uint16_t color)
@@ -122,80 +189,10 @@ void HINKE029A10::update(void)
   if (_rst >= 0)
   {
     digitalWrite(_rst, 0);
-    delay(10);
+    delay(1);
     digitalWrite(_rst, 1);
-    delay(10);
+    delay(1);
   }
-//2.9" Display:
-
-    _writeCommand(0x12);
-  _waitWhileBusy("SendResetfirst");
-  delay(5);
-
-  _writeCommand(0x74);
-  _writeData (0x54);
-
-  _writeCommand(0x7E);
-  _writeData (0x3B);
-
-  _writeCommand(0x2B);
-  _writeData (0x04);
-  _writeData (0x63);
-
-  _writeCommand(0x0C);
-  _writeData (0x8F);
-  _writeData (0x8F);
-  _writeData (0x8F);
-  _writeData (0x3F);
-
-  _writeCommand(0x01);
-  _writeData (0x27);
-  _writeData (0x01);
-  _writeData (0x00);
-
-  _writeCommand(0x11);
-  _writeData (0x01);
-
-  _writeCommand(0x44);
-  _writeData (0x00);
-  _writeData (0x0F);
-
-  _writeCommand(0x45);
-  _writeData (0x27);
-  _writeData (0x01);
-  _writeData (0x00);
-  _writeData (0x00);
-
-  _writeCommand (0x3C);
-  _writeData (0xC0);
-  _writeCommand (0x18);
-  _writeData (0x80);
-  _writeCommand (0x22);
-  _writeData (0xB1);
-  _writeCommand (0x20);
-  _waitWhileBusy("SendResetmiddle");
-  delay(5);
-   
-  _writeCommand (0x4E);
-  _writeData (0x00);
-
-  _writeCommand (0x4F);
-  _writeData (0x27);
-  _writeData (0x01);
-
-  _writeCommand (0x26);
-
-  for (uint32_t i = 0; i < HINKE029A10_BUFFER_SIZE; i++)
-  {
-    _writeData((i < sizeof(_red_buffer)) ? ~_red_buffer[i] : 0xFF);
-  }
-
-  _writeCommand (0x4E);
-  _writeData (0x00);
-
-  _writeCommand (0x4F);
-  _writeData (0x27);
-  _writeData (0x01);
 
   _writeCommand (0x24);
 
@@ -204,12 +201,21 @@ void HINKE029A10::update(void)
     _writeData((i < sizeof(_black_buffer)) ? ~_black_buffer[i] : 0xFF);
   }
 
+  _writeCommand (0x26);
+
+  for (uint32_t i = 0; i < HINKE029A10_BUFFER_SIZE; i++)
+  {
+    _writeData((i < sizeof(_red_buffer)) ? ~_red_buffer[i] : 0xFF);
+  }
+
   _writeCommand (0x22);
   _writeData (0xC7);
-
   _writeCommand (0x20);
+
   _waitWhileBusy("SEND DONE");
-  
+
+  _sleep(); // And go to sleep.
+
 }
 
 void  HINKE029A10::drawBitmap(const uint8_t *bitmap, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color, int16_t mode)
@@ -225,107 +231,13 @@ void HINKE029A10::drawExamplePicture(const uint8_t* black_bitmap, const uint8_t*
 
 void HINKE029A10::drawPicture(const uint8_t* black_bitmap, const uint8_t* red_bitmap, uint32_t black_size, uint32_t red_size, int16_t mode)
 {
-  if (_current_page != -1) return;
-  _using_partial_mode = false;
-  _wakeUp();
-  _writeCommand(0x10);
-  for (uint32_t i = 0; i < HINKE029A10_BUFFER_SIZE; i++)
-  {
-    uint8_t data = 0xFF; // white is 0xFF on device
-    if (i < black_size)
-    {
-#if defined(__AVR) || defined(ESP8266) || defined(ESP32)
-      data = pgm_read_byte(&black_bitmap[i]);
-#else
-      data = black_bitmap[i];
-#endif
-      if (mode & bm_invert) data = ~data;
-    }
-    _writeData(data);
-  }
-  _writeCommand(0x13);
-  for (uint32_t i = 0; i < HINKE029A10_BUFFER_SIZE; i++)
-  {
-    uint8_t data = 0xFF; // white is 0xFF on device
-    if (i < red_size)
-    {
-#if defined(__AVR) || defined(ESP8266) || defined(ESP32)
-      data = pgm_read_byte(&red_bitmap[i]);
-#else
-      data = red_bitmap[i];
-#endif
-      if (mode & bm_invert_red) data = ~data;
-    }
-    _writeData(data);
-  }
-  _writeCommand(0x12); //display refresh
-  _waitWhileBusy("drawPicture");
-  _sleep();
+ drawBitmapBM(black_bitmap, 0, 0, HINKE029A10_WIDTH, HINKE029A10_HEIGHT, GxEPD_BLACK, mode);
+ drawBitmapBM(red_bitmap, 0, 0, HINKE029A10_WIDTH, HINKE029A10_HEIGHT, GxEPD_RED, mode);
 }
 
 void HINKE029A10::drawBitmap(const uint8_t* bitmap, uint32_t size, int16_t mode)
 {
-  if (_current_page != -1) return;
-  // example bitmaps are normal on b/w, but inverted on red
-  if (mode & bm_default) mode |= bm_normal;
-  if (mode & bm_partial_update)
-  {
-    _using_partial_mode = true;
-    _wakeUp();
-    IO.writeCommandTransaction(0x91); // partial in
-    _setPartialRamArea(0, 0, HINKE029A10_WIDTH - 1, HINKE029A10_HEIGHT - 1);
-    _writeCommand(0x10);
-    for (uint32_t i = 0; i < HINKE029A10_BUFFER_SIZE; i++)
-    {
-      uint8_t data = 0xFF; // white is 0xFF on device
-      if (i < size)
-      {
-#if defined(__AVR) || defined(ESP8266) || defined(ESP32)
-        data = pgm_read_byte(&bitmap[i]);
-#else
-        data = bitmap[i];
-#endif
-        if (mode & bm_invert) data = ~data;
-      }
-      _writeData(data);
-    }
-    _writeCommand(0x13);
-    for (uint32_t i = 0; i < HINKE029A10_BUFFER_SIZE; i++)
-    {
-      _writeData(0xFF); // white is 0xFF on device
-    }
-    _writeCommand(0x12); //display refresh
-    _waitWhileBusy("drawBitmap");
-    IO.writeCommandTransaction(0x92); // partial out
-  }
-  else
-  {
-    _using_partial_mode = false;
-    _wakeUp();
-    _writeCommand(0x10);
-    for (uint32_t i = 0; i < HINKE029A10_BUFFER_SIZE; i++)
-    {
-      uint8_t data = 0xFF; // white is 0xFF on device
-      if (i < size)
-      {
-#if defined(__AVR) || defined(ESP8266) || defined(ESP32)
-        data = pgm_read_byte(&bitmap[i]);
-#else
-        data = bitmap[i];
-#endif
-        if (mode & bm_invert) data = ~data;
-      }
-      _writeData(data);
-    }
-    _writeCommand(0x13);
-    for (uint32_t i = 0; i < HINKE029A10_BUFFER_SIZE; i++)
-    {
-      _writeData(0xFF); // white is 0xFF on device
-    }
-    _writeCommand(0x12); //display refresh
-    _waitWhileBusy("drawBitmap");
-    _sleep();
-  }
+ drawBitmapBM(bitmap, 0, 0, HINKE029A10_WIDTH, HINKE029A10_HEIGHT, GxEPD_BLACK, mode);
 }
 
 void HINKE029A10::eraseDisplay(bool using_partial_update)
@@ -578,7 +490,7 @@ void HINKE029A10::_wakeUp()
     digitalWrite(_rst, 1);
     delay(10);
   }
-
+/*
   _writeCommand(0x06);
   _writeData (0x17);
   _writeData (0x17);
@@ -593,16 +505,16 @@ void HINKE029A10::_wakeUp()
   _writeData (0x80);
   _writeData (0x01);
   _writeData (0x28);
+  */
 }
 
 void HINKE029A10::_sleep(void)
 {
-  _writeCommand(0x02);      //power off
-  _waitWhileBusy("_sleep Power Off");
+  _waitWhileBusy("_sleep Going to sleep.");
   if (_rst >= 0)
   {
-    _writeCommand(0x07); // deep sleep
-    _writeData (0xa5);
+  _writeCommand (0x10); // sleep!
+  _writeData (0x11);
   }
 }
 
