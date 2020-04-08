@@ -85,6 +85,7 @@ class HINKE029A10 : public GxEPD
     bool _diag_enabled;
     int8_t _rst;
     int8_t _busy;
+    static const uint8_t LUTDefault_full[];
 #if defined(ESP8266) || defined(ESP32)
   public:
     // the compiler of these packages has a problem with signature matching to base classes

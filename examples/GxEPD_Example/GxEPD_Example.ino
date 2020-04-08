@@ -388,38 +388,26 @@ void showBitmapExample()
   //display.drawExamplePicture(BitmapExample1, BitmapExample2, sizeof(BitmapExample1), sizeof(BitmapExample2));
   //delay(5000);
 #else
-  // drawPicture doesn't work but that can be solved by drawing both colors eseparately...
-  //display.drawPicture(BitmapWaveshare_black, BitmapWaveshare_red, sizeof(BitmapWaveshare_black), sizeof(BitmapWaveshare_red));
-  //display.drawBitmap(BitmapWaveshare_red, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK, GxEPD::bm_invert);
-  //display.drawBitmap(BitmapWaveshare_black, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_RED, GxEPD::bm_transparent);
-  //display.update();
-  //delay(5000);
-  //display.drawBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK, GxEPD::bm_invert);
-  //display.drawBitmap(BitmapExample2, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_RED, GxEPD::bm_transparent);
-  //display.update();
-  //delay(5000);
-  display.drawBitmap(BitmapWaveshare_red, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK, GxEPD::bm_invert);
-  display.drawBitmap(BitmapWaveshare_black, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_RED, GxEPD::bm_transparent);
+  display.fillScreen(GxEPD_WHITE);
+  display.drawPicture(BitmapWaveshare_black, BitmapWaveshare_red, sizeof(BitmapWaveshare_black), sizeof(BitmapWaveshare_red), GxEPD::bm_invert | GxEPD::bm_transparent);
+  //display.drawBitmap(BitmapWaveshare_black, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK, GxEPD::bm_invert | GxEPD::bm_transparent);
+  //display.drawBitmap(BitmapWaveshare_red, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_RED, GxEPD::bm_invert | GxEPD::bm_transparent);
   display.update();
-  delay(5000);
-  display.drawBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK, (1 << 1));
-  display.drawBitmap(BitmapExample2, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_RED, (1 << 8));
+  delay(3000);
+  display.fillScreen(GxEPD_WHITE);
+  display.drawBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK, GxEPD::bm_invert | GxEPD::bm_transparent);
+  display.drawBitmap(BitmapExample2, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_RED, GxEPD::bm_transparent);
   display.update();
-  delay(5000);
-  /*
-    delay(5000);
-    //display.drawExamplePicture(BitmapExample1, BitmapExample2, sizeof(BitmapExample1), sizeof(BitmapExample2));
-    delay(5000);
-    //display.drawExamplePicture(BitmapExample3, BitmapExample4, sizeof(BitmapExample3), sizeof(BitmapExample4));
-    delay(5000);
-    //display.drawExampleBitmap(BitmapWaveshare_black, sizeof(BitmapWaveshare_black));
-    delay(2000);
-    // example bitmaps for b/w/r are normal on b/w, but inverted on red
-    display.drawExampleBitmap(BitmapExample1, sizeof(BitmapExample1));
-    delay(2000);
-    display.drawExampleBitmap(BitmapExample2, sizeof(BitmapExample2), GxEPD::bm_invert);
-    delay(2000);
-  */
+  delay(3000);
+  display.fillScreen(GxEPD_WHITE);
+  display.drawPicture(BitmapExample3, BitmapExample4, sizeof(BitmapExample3), sizeof(BitmapExample4), GxEPD::bm_transparent);
+  display.update();
+  delay(3000);
+  display.drawBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK);
+  display.drawBitmap(BitmapExample2, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_RED, GxEPD::bm_transparent);
+  display.update();
+  delay(3000);
+  display.fillScreen(GxEPD_WHITE);
 #endif
 }
 #endif
