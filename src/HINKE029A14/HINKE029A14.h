@@ -1,7 +1,7 @@
 #ifndef _HINKE029A14_H_
 #define _HINKE029A14_H_
 
-#include "GxEPD.h"
+#include "../GxEPD.h"
 //2.9"
 #define HINKE029A14_WIDTH 128
 #define HINKE029A14_HEIGHT 296
