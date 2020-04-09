@@ -50,7 +50,7 @@ void HINKE029A10::drawPixel(int16_t x, int16_t y, uint16_t color)
   {
     case 1:
       swap(x, y);
-      y = HINKE029A10_WIDTH - y - 1;
+      x = HINKE029A10_WIDTH - x - 1;
       break;
     case 2:
       x = HINKE029A10_WIDTH - x - 1;
@@ -58,8 +58,7 @@ void HINKE029A10::drawPixel(int16_t x, int16_t y, uint16_t color)
       break;
     case 3:
       swap(x, y);
-      y = y + HINKE029A10_HEIGHT - HINKE029A10_WIDTH;
-      x = HINKE029A10_WIDTH - x - 1;
+      y = HINKE029A10_HEIGHT - y - 1;
       break;
   }
   uint16_t i = x / 8 + y * HINKE029A10_WIDTH / 8;
@@ -194,14 +193,20 @@ void HINKE029A10::update(void)
     delay(1);
   }
 
-  _writeCommand (0x24);
+  set_xy_window(0, 15, 0, 295);
+  set_xy_counter(0, 0);
+
+  _writeCommand (0x24); // Write B/W
 
   for (uint32_t i = 0; i < HINKE029A10_BUFFER_SIZE; i++)
   {
     _writeData((i < sizeof(_black_buffer)) ? ~_black_buffer[i] : 0xFF);
   }
 
-  _writeCommand (0x26);
+  set_xy_window(0, 15, 0, 295);
+  set_xy_counter(0, 0);
+
+  _writeCommand (0x26); // Write RED
 
   for (uint32_t i = 0; i < HINKE029A10_BUFFER_SIZE; i++)
   {
@@ -216,6 +221,25 @@ void HINKE029A10::update(void)
 
   _sleep(); // And go to sleep.
 
+}
+
+void HINKE029A10::set_xy_window(unsigned char xs, unsigned char xe, unsigned int ys, unsigned int ye){
+  _writeCommand(0x44);    // set RAM x address start/end, in page 36
+  _writeData(xs);    // RAM x address start at 00h;
+  _writeData(xe);    // RAM x address end at 0fh(12+1)*8->104
+  _writeCommand(0x45);   // set RAM y address start/end, in page 37
+  _writeData(ys);    // RAM y address start at 0;
+  _writeData(ys>>8);
+  _writeData(ye);    // RAM y address end at
+  _writeData(ye>>8);   // RAM y address end at
+}
+
+void HINKE029A10::set_xy_counter(unsigned char x, unsigned char y){
+  _writeCommand(0x4E);    // set RAM x address count
+  _writeData(x);
+  _writeCommand(0x4F);   // set RAM y address count
+  _writeData(y);
+  _writeData(y>>8);
 }
 
 void  HINKE029A10::drawBitmap(const uint8_t *bitmap, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color, int16_t mode)
