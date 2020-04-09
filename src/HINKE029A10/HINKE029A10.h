@@ -30,6 +30,8 @@ class HINKE029A10 : public GxEPD
     void update(void);
     // to buffer, may be cropped, drawPixel() used, update needed
     void  drawBitmap(const uint8_t *bitmap, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color, int16_t mode = bm_normal);
+    void set_xy_window(unsigned char xs, unsigned char xe, unsigned int ys, unsigned int ye);
+    void set_xy_counter(unsigned char x, unsigned char y);
     // to full screen, filled with white if size is less, no update needed, black  /white / red, for example bitmaps
     void drawExamplePicture(const uint8_t* black_bitmap, const uint8_t* red_bitmap, uint32_t black_size, uint32_t red_size);
     // to full screen, filled with white if size is less, no update needed, black  /white / red, general version
