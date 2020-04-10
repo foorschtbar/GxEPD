@@ -65,6 +65,9 @@
 //#include <GxGDEW075Z09/GxGDEW075Z09.h>    // 7.5" b/w/r
 //#include <GxGDEW075Z08/GxGDEW075Z08.h>    // 7.5" b/w/r 800x480
 
+// HINK displays
+#include <HINKE029A10/HINKE029A10.h>    // 2.9" b/w/r HINK-E029A10
+
 #include GxEPD_BitmapExamples
 
 // FreeFonts from Adafruit_GFX
@@ -87,8 +90,8 @@ GxEPD_Class display(io, /*RST=D4*/ 2, /*BUSY=D2*/ 4); // default selection of D4
 // Heltec E-Paper 1.54" b/w without RST, BUSY
 //GxEPD_Class display(io, /*RST=D4*/ -1, /*BUSY=D2*/ -1); // no RST, no BUSY
 // Waveshare e-Paper ESP8266 Driver Board
-//GxIO_Class io(SPI, 15, 4, 5); 
-//GxEPD_Class display(io, 5, 16); 
+//GxIO_Class io(SPI, 15, 4, 5);
+//GxEPD_Class display(io, 5, 16);
 
 #elif defined(ESP32)
 
@@ -374,6 +377,38 @@ void showBitmapExample()
 #endif
   display.drawExampleBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK);
   display.update();
+}
+#endif
+
+#if defined(_HINKE029A10_H_)
+#define HAS_RED_COLOR
+void showBitmapExample()
+{
+#if defined(__AVR)
+  //display.drawExamplePicture(BitmapExample1, BitmapExample2, sizeof(BitmapExample1), sizeof(BitmapExample2));
+  //delay(5000);
+#else
+  display.fillScreen(GxEPD_WHITE);
+  display.drawPicture(BitmapWaveshare_black, BitmapWaveshare_red, sizeof(BitmapWaveshare_black), sizeof(BitmapWaveshare_red), GxEPD::bm_invert | GxEPD::bm_transparent);
+  //display.drawBitmap(BitmapWaveshare_black, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK, GxEPD::bm_invert | GxEPD::bm_transparent);
+  //display.drawBitmap(BitmapWaveshare_red, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_RED, GxEPD::bm_invert | GxEPD::bm_transparent);
+  display.update();
+  delay(3000);
+  display.fillScreen(GxEPD_WHITE);
+  display.drawBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK, GxEPD::bm_invert | GxEPD::bm_transparent);
+  display.drawBitmap(BitmapExample2, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_RED, GxEPD::bm_transparent);
+  display.update();
+  delay(3000);
+  display.fillScreen(GxEPD_WHITE);
+  display.drawPicture(BitmapExample3, BitmapExample4, sizeof(BitmapExample3), sizeof(BitmapExample4), GxEPD::bm_transparent);
+  display.update();
+  delay(3000);
+  display.drawBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK);
+  display.drawBitmap(BitmapExample2, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_RED, GxEPD::bm_transparent);
+  display.update();
+  delay(3000);
+  display.fillScreen(GxEPD_WHITE);
+#endif
 }
 #endif
 
