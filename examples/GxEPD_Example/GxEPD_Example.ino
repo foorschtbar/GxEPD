@@ -76,9 +76,6 @@
 //#include <GxGDEW075Z09/GxGDEW075Z09.h>    // 7.5" b/w/r
 //#include <GxGDEW075Z08/GxGDEW075Z08.h>    // 7.5" b/w/r 800x480
 
-// HINK displays
-#include <HINKE029A10/HINKE029A10.h> // 2.9" b/w/r HINK-E029A10
-
 #include GxEPD_BitmapExamples
 
 // FreeFonts from Adafruit_GFX
@@ -435,8 +432,7 @@ void showBitmapExample()
 }
 #endif
 
-#if defined(_HINKE029A10_H_)
-#define HAS_RED_COLOR
+#if defined(_GxGDEW026T0_H_)
 void showBitmapExample()
 {
 #if defined(__AVR)
